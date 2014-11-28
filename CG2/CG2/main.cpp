@@ -7,9 +7,25 @@
 //
 
 #include <iostream>
+#include <GLUT/GLUT.h>
+#include "glfuncs.h"
 
-int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+int main(int argc, char **argv)
+{
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+    glutInitWindowPosition(0, 0);
+    glutInitWindowSize(640, 480);
+    glutCreateWindow("ANSHA ABDUL");
+    
+    glutDisplayFunc(GLFuncs::Display);
+    glutKeyboardFunc(GLFuncs::Keyboard);
+    glutReshapeFunc(GLFuncs::Resize);
+    glutIdleFunc(GLFuncs::Idle);
+    
+    glutMainLoop();
+    
+    glutSwapBuffers();
+    
     return 0;
 }
