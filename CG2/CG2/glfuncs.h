@@ -20,8 +20,19 @@ public:
     static void Resize(int w, int h);
     static void Display();
     static void Keyboard(unsigned char key, int x, int y);
+    
+    void triangleDrawRectXY(double x1, double x2, double y1, double y2, double z);
+    void triangleDrawRectXZ(double x1, double x2, double z1, double z2, double y);
+    void triangleDrawRectYZ(double y1, double y2, double z1, double z2, double x);
 private:
     bool m_isFullScreen;
 };
+
+double color_red[3] = {1.0f, 0.0f, 0.0f};
+double color_green[3] = {0.0f, 1.0f, 0.0f};
+double color_blue[3] = {0.0f, 0.0f, 1.0f};
+
+double color_black[3] = {0.0f, 0.0f, 0.0f};
+double color_white[3] = {1.0f, 1.0f, 1.0f};
 
 #endif /* defined(__CG2__glfuncs__) */

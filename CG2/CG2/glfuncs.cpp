@@ -11,12 +11,52 @@
 #include <GLUT/GLUT.h>
 #include "glfuncs.h"
 #include "windowProperties.h"
+#include "camera.h"
 
-windowProperties wp = new windowProperties(false, 0, 0, 640, 480);
+windowProperties wp = *new windowProperties(false, 0, 0, 640, 480);
+glCamera glCam = *new glCamera();
+
+GLFuncs glf = *new GLFuncs();
 
 GLFuncs::GLFuncs():m_isFullScreen(false)
 {
     
+}
+
+void GLFuncs::triangleDrawRectXY(double x1, double x2, double y1, double y2, double z)
+{
+    glBegin(GL_TRIANGLES);
+    glVertex3d(x1, y1, z);
+    glVertex3d(x2, y2, z);
+    glVertex3d(x2, y1, z);
+    glVertex3d(x2, y2, z);
+    glVertex3d(x1, y1, z);
+    glVertex3d(x1, y2, z);
+    glEnd();
+}
+
+void GLFuncs::triangleDrawRectXZ(double x1, double x2, double z1, double z2, double y)
+{
+    glBegin(GL_TRIANGLES);
+    glVertex3d(x1, y, z1);
+    glVertex3d(x2, y, z2);
+    glVertex3d(x2, y, z1);
+    glVertex3d(x2, y, z2);
+    glVertex3d(x1, y, z1);
+    glVertex3d(x1, y, z2);
+    glEnd();
+}
+
+void GLFuncs::triangleDrawRectYZ(double y1, double y2, double z1, double z2, double x)
+{
+    glBegin(GL_TRIANGLES);
+    glVertex3d(x, y1, z1);
+    glVertex3d(x, y2, z2);
+    glVertex3d(x, y2, z1);
+    glVertex3d(x, y2, z2);
+    glVertex3d(x, y1, z1);
+    glVertex3d(x, y1, z2);
+    glEnd();
 }
 
 void GLFuncs::Idle()
@@ -28,7 +68,26 @@ void GLFuncs::Display()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
+    glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    gluLookAt(glCam.get_x(), glCam.get_y(), glCam.get_z(), 0, 0, 0, 0, 1, 0);
+    
+    glMatrixMode(GL_PROJECTION);
+    
+    glColor3dv(color_red);
+    glf.triangleDrawRectXY(-3, 3, 0, 3, 0);
+    glColor3dv(color_white);
+    glf.triangleDrawRectXY(-1, 1, 1, 2, 0);
+    
+    glColor3dv(color_red);
+    glf.triangleDrawRectYZ(0, 3, 0, 6, -3);
+    glColor3dv(color_white);
+    glf.triangleDrawRectYZ(1, 2, 2, 4, -3);
+    
+    glColor3dv(color_red);
+    glf.triangleDrawRectYZ(0, 3, 0, 6, 3);
+    glColor3dv(color_white);
+    glf.triangleDrawRectYZ(1, 2, 2, 4, 3);
     
     glFinish();
     
@@ -52,6 +111,26 @@ void GLFuncs::Keyboard(unsigned char key, int x, int y)
             wp.set_fullscreen(false);
         }
     }
+    
+    if(key == 'w')
+    {
+        glCam.set_camera(glCam.get_x(), glCam.get_y(), glCam.get_z() + 1);
+    }
+    
+    if(key == 's')
+    {
+        glCam.set_camera(glCam.get_x(), glCam.get_y(), glCam.get_z() - 1);
+    }
+    
+    if(key == 'a')
+    {
+        glCam.set_camera(glCam.get_x() - 1, glCam.get_y(), glCam.get_z());
+    }
+    
+    if(key == 'd')
+    {
+        glCam.set_camera(glCam.get_x() + 1, glCam.get_y(), glCam.get_z());
+    }
 }
 
 void GLFuncs::Resize(int w, int h)
@@ -66,8 +145,8 @@ void GLFuncs::Resize(int w, int h)
     glLoadIdentity();
     
     glFrustum(-1.0*w/h, 1.0*w/h, -1, 1, 1, 1000);
-    
-    gluLookAt(2.5, 0.5, 2.5, 0, 0, 0, 0, 1, 0);
+
+    gluLookAt(glCam.get_x(), glCam.get_y(), glCam.get_z(), 0, 0, 0, 0, 1, 0);
     
     glOrtho(-2.0*w/h, 2.0*w/h, -2, 2, -1, 1);
     glMatrixMode(GL_MODELVIEW);

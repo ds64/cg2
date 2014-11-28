@@ -12,6 +12,7 @@
 		33AB7B1A1A27A97F00FAADAD /* glfuncs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33AB7B181A27A97F00FAADAD /* glfuncs.cpp */; };
 		33ADE9521A285C79005AAE60 /* windowProperties.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33ADE9501A285C79005AAE60 /* windowProperties.cpp */; };
 		33ADE9541A28651C005AAE60 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33ADE9531A28651B005AAE60 /* OpenGL.framework */; };
+		33ADE9571A2885C2005AAE60 /* camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33ADE9551A2885C2005AAE60 /* camera.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -35,6 +36,8 @@
 		33ADE9501A285C79005AAE60 /* windowProperties.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = windowProperties.cpp; sourceTree = "<group>"; };
 		33ADE9511A285C79005AAE60 /* windowProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = windowProperties.h; sourceTree = "<group>"; };
 		33ADE9531A28651B005AAE60 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		33ADE9551A2885C2005AAE60 /* camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = camera.cpp; sourceTree = "<group>"; };
+		33ADE9561A2885C2005AAE60 /* camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,6 +79,8 @@
 				33AB7B191A27A97F00FAADAD /* glfuncs.h */,
 				33ADE9501A285C79005AAE60 /* windowProperties.cpp */,
 				33ADE9511A285C79005AAE60 /* windowProperties.h */,
+				33ADE9551A2885C2005AAE60 /* camera.cpp */,
+				33ADE9561A2885C2005AAE60 /* camera.h */,
 			);
 			path = CG2;
 			sourceTree = "<group>";
@@ -136,6 +141,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				33ADE9571A2885C2005AAE60 /* camera.cpp in Sources */,
 				33ADE9521A285C79005AAE60 /* windowProperties.cpp in Sources */,
 				33AB7B1A1A27A97F00FAADAD /* glfuncs.cpp in Sources */,
 				33AB7B101A27A6C400FAADAD /* main.cpp in Sources */,
