@@ -17,7 +17,7 @@ public:
     GLFuncs();
     
     static void Idle();
-    static void Resize(int W, int h);
+    static void Resize(int w, int h);
     static void Display();
     static void Keyboard(unsigned char key, int x, int y);
 private:

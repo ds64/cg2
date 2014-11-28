@@ -8,6 +8,8 @@
 
 #include <iostream>
 #include <GLUT/GLUT.h>
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
 #include "glfuncs.h"
 
 int main(int argc, char **argv)
@@ -23,9 +25,12 @@ int main(int argc, char **argv)
     glutReshapeFunc(GLFuncs::Resize);
     glutIdleFunc(GLFuncs::Idle);
     
-    glutMainLoop();
+    glClearColor(0.3, 0.3, 0.5, 1);
+    glClear(GL_COLOR_BUFFER_BIT);
     
     glutSwapBuffers();
+    
+    glutMainLoop();
     
     return 0;
 }

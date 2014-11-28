@@ -10,8 +10,8 @@
 		33AB7B101A27A6C400FAADAD /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33AB7B0F1A27A6C400FAADAD /* main.cpp */; };
 		33AB7B171A27A74200FAADAD /* GLUT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33AB7B161A27A74200FAADAD /* GLUT.framework */; };
 		33AB7B1A1A27A97F00FAADAD /* glfuncs.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33AB7B181A27A97F00FAADAD /* glfuncs.cpp */; };
-		33AB7B1C1A27ADA400FAADAD /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33AB7B1B1A27ADA400FAADAD /* GLKit.framework */; };
 		33ADE9521A285C79005AAE60 /* windowProperties.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 33ADE9501A285C79005AAE60 /* windowProperties.cpp */; };
+		33ADE9541A28651C005AAE60 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 33ADE9531A28651B005AAE60 /* OpenGL.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -32,9 +32,9 @@
 		33AB7B161A27A74200FAADAD /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		33AB7B181A27A97F00FAADAD /* glfuncs.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glfuncs.cpp; sourceTree = "<group>"; };
 		33AB7B191A27A97F00FAADAD /* glfuncs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = glfuncs.h; sourceTree = "<group>"; };
-		33AB7B1B1A27ADA400FAADAD /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		33ADE9501A285C79005AAE60 /* windowProperties.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = windowProperties.cpp; sourceTree = "<group>"; };
 		33ADE9511A285C79005AAE60 /* windowProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = windowProperties.h; sourceTree = "<group>"; };
+		33ADE9531A28651B005AAE60 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,7 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				33AB7B1C1A27ADA400FAADAD /* GLKit.framework in Frameworks */,
+				33ADE9541A28651C005AAE60 /* OpenGL.framework in Frameworks */,
 				33AB7B171A27A74200FAADAD /* GLUT.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -53,7 +53,7 @@
 		33AB7B031A27A6C400FAADAD = {
 			isa = PBXGroup;
 			children = (
-				33AB7B1B1A27ADA400FAADAD /* GLKit.framework */,
+				33ADE9531A28651B005AAE60 /* OpenGL.framework */,
 				33AB7B161A27A74200FAADAD /* GLUT.framework */,
 				33AB7B0E1A27A6C400FAADAD /* CG2 */,
 				33AB7B0D1A27A6C400FAADAD /* Products */,
