@@ -5,6 +5,11 @@
 //  Created by Andrey Bogdanov on 27.11.14.
 //  Copyright (c) 2014 Andrey Bogdanov. All rights reserved.
 //
+//  PURPOSE:
+//      * OpenGL handlers
+//      * Main display function
+//      * Rendering
+//
 
 #include <OpenGL/gl.h>
 #include <OpenGL/glu.h>
@@ -13,77 +18,125 @@
 #include "windowProperties.h"
 #include "camera.h"
 
+// Predefined colors
+
+double color_red[3] = {1.0f, 0.0f, 0.0f};
+double color_green[3] = {0.0f, 1.0f, 0.0f};
+double color_blue[3] = {0.0f, 0.0f, 1.0f};
+
+double color_black[3] = {0.0f, 0.0f, 0.0f};
+double color_white[3] = {1.0f, 1.0f, 1.0f};
+
+// windowProperties, glCamera, GLFuncs classes init
+
 windowProperties wp = *new windowProperties(false, 0, 0, 640, 480);
 glCamera glCam = *new glCamera();
-
 GLFuncs glf = *new GLFuncs();
+
+// GLFuncs default constructor
+// Fullscreen sets to false
 
 GLFuncs::GLFuncs():m_isFullScreen(false)
 {
     
 }
 
+// Draw rect in Z plane
+
 void GLFuncs::triangleDrawRectXY(double x1, double x2, double y1, double y2, double z)
 {
+    // Use triangles
     glBegin(GL_TRIANGLES);
+    // First triangle vertices
     glVertex3d(x1, y1, z);
     glVertex3d(x2, y2, z);
     glVertex3d(x2, y1, z);
+    // Second triangle vertices
     glVertex3d(x2, y2, z);
     glVertex3d(x1, y1, z);
     glVertex3d(x1, y2, z);
     glEnd();
 }
 
+// Draw rect in Y plane
+
 void GLFuncs::triangleDrawRectXZ(double x1, double x2, double z1, double z2, double y)
 {
+    // Use triangles
     glBegin(GL_TRIANGLES);
+    // First triangle vertices
     glVertex3d(x1, y, z1);
     glVertex3d(x2, y, z2);
     glVertex3d(x2, y, z1);
+    // Second triangle vertices
     glVertex3d(x2, y, z2);
     glVertex3d(x1, y, z1);
     glVertex3d(x1, y, z2);
     glEnd();
 }
 
+// Draw rect in Z plane
+
 void GLFuncs::triangleDrawRectYZ(double y1, double y2, double z1, double z2, double x)
 {
+    // Use triangles
     glBegin(GL_TRIANGLES);
+    // First triangle vertices
     glVertex3d(x, y1, z1);
     glVertex3d(x, y2, z2);
     glVertex3d(x, y2, z1);
+    // Second triangle vertices
     glVertex3d(x, y2, z2);
     glVertex3d(x, y1, z1);
     glVertex3d(x, y1, z2);
     glEnd();
 }
 
+// Draw rect with triangles
+
+void GLFuncs::triangleDrawRectXYZ(double x1, double x2, double y1, double y2, double z1, double z2)
+{
+    // Use triangles
+    glBegin(GL_TRIANGLES);
+    // First triangle vertices
+    glVertex3d(x1,y1,z1);
+    glVertex3d(x1,y1,z2);
+    glVertex3d(x2,y2,z1);
+    // Second triangle vertices
+    glVertex3d(x1,y1,z2);
+    glVertex3d(x2,y2,z2);
+    glVertex3d(x2,y2,z1);
+    glEnd();
+}
+
+// Idle function
+
 void GLFuncs::Idle()
 {
-    glutPostRedisplay();
+    glutPostRedisplay();            // Redisplay buffer
 }
+
+// Display function
 
 void GLFuncs::Display()
 {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     // Clear color and depth buffers
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    // Set camera to new value
     gluLookAt(glCam.get_x(), glCam.get_y(), glCam.get_z(), glCam.get_look_x(), glCam.get_look_y(), glCam.get_look_z(), 0, 1, 0);
     
     glMatrixMode(GL_PROJECTION);
     
+    // Render house
     glColor3dv(color_white);
     glf.triangleDrawRectXZ(-100, 100, -100, 100, 0);
     
     glColor3dv(color_red);
     glf.triangleDrawRectXY(-10, 10, 0, 10, 0);
-    glColor3dv(color_red);
     glf.triangleDrawRectXY(-10, 10, 0, 10, 20);
-    glColor3dv(color_red);
     glf.triangleDrawRectYZ(0, 10, 0, 20, -10);
-    glColor3dv(color_red);
     glf.triangleDrawRectYZ(0, 10, 0, 20, 10);
     
     glBegin(GL_TRIANGLES);
@@ -98,83 +151,75 @@ void GLFuncs::Display()
     glVertex3d(0,15,20);
     glEnd();
     
-    glBegin(GL_TRIANGLES);
-    glVertex3d(-10,10,0);
-    glVertex3d(-10,10,20);
-    glVertex3d(0,15,0);
-    glEnd();
-    
-    glBegin(GL_TRIANGLES);
-    glVertex3d(-10,10,20);
-    glVertex3d(0,15,20);
-    glVertex3d(0,15,0);
-    glEnd();
-    
-    glBegin(GL_TRIANGLES);
-    glVertex3d(10,10,0);
-    glVertex3d(10,10,20);
-    glVertex3d(0,15,0);
-    glEnd();
-    
-    glBegin(GL_TRIANGLES);
-    glVertex3d(10,10,20);
-    glVertex3d(0,15,20);
-    glVertex3d(0,15,0);
-    glEnd();
+    glf.triangleDrawRectXYZ(-10, 0, 10, 15, 0, 20);
+    glf.triangleDrawRectXYZ(10, 0, 10, 15, 0, 20);
     
     glFinish();
     
-    glutSwapBuffers();
+    glutSwapBuffers();          // Swap buffers
 }
+
+// Keyboard handler
 
 void GLFuncs::Keyboard(unsigned char key, int x, int y)
 {
+    // Go fullscreen or exit fullscreen
     if(key == 'f')
     {
+        // Set fullscreen
         if(wp.get_fullscreen() == false)
         {
+            // Set new position to windowProperties class
             wp.set_position(glutGet((GLenum)GLUT_WINDOW_X), glutGet((GLenum)GLUT_WINDOW_Y));
-            glutFullScreen();
-            wp.set_fullscreen(true);
+            glutFullScreen();           // Enter fullscreen
+            wp.set_fullscreen(true);    // Save fullscreen property
         }
+        // Exit fullscreen
         else
         {
+            // Exit fullscreen by reshaping
             glutReshapeWindow(wp.get_window_size().get_width(), wp.get_window_size().get_height());
             glutPositionWindow(wp.get_position().get_x(),wp.get_position().get_y());
             wp.set_fullscreen(false);
         }
     }
     
+    // Go forward
     if(key == 'w')
     {
         glCam.set_camera(glCam.get_x(), glCam.get_y(), glCam.get_z() + 0.5);
         glCam.set_lookPoint(glCam.get_look_x(), glCam.get_look_y(), glCam.get_look_z() + 0.5);
     }
     
+    // Go back
     if(key == 's')
     {
         glCam.set_camera(glCam.get_x(), glCam.get_y(), glCam.get_z() - 0.5);
         glCam.set_lookPoint(glCam.get_look_x(), glCam.get_look_y(), glCam.get_look_z() - 0.5);
     }
     
+    // Go left
     if(key == 'a')
     {
         glCam.set_camera(glCam.get_x() - 0.5, glCam.get_y(), glCam.get_z());
         glCam.set_lookPoint(glCam.get_look_x() - 0.5, glCam.get_look_y(), glCam.get_look_z());
     }
     
+    // Go right
     if(key == 'd')
     {
         glCam.set_camera(glCam.get_x() + 0.5, glCam.get_y(), glCam.get_z());
         glCam.set_lookPoint(glCam.get_look_x() + 0.5, glCam.get_look_y(), glCam.get_look_z());
     }
     
+    // Go up
     if(key == 'q')
     {
         glCam.set_camera(glCam.get_x(), glCam.get_y() + 0.5, glCam.get_z());
         glCam.set_lookPoint(glCam.get_look_x(), glCam.get_look_y() + 0.5, glCam.get_look_z());
     }
     
+    // Go down
     if(key == 'e')
     {
         glCam.set_camera(glCam.get_x(), glCam.get_y() - 0.5, glCam.get_z());
@@ -182,13 +227,16 @@ void GLFuncs::Keyboard(unsigned char key, int x, int y)
     }
 }
 
+// Resize handler
 void GLFuncs::Resize(int w, int h)
 {
+    // If not fullscreen save current size
     if(wp.get_fullscreen() != true)
     {
         wp.set_size(w, h);
     }
     
+    // Set camera
     glViewport(0, 0, w, h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
