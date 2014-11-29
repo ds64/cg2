@@ -14,9 +14,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "15"
-            endingLineNumber = "15"
-            landmarkName = "main(int argc, char **argv)"
-            landmarkType = "7">
+            endingLineNumber = "15">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -26,11 +24,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CG2/glfuncs.cpp"
-            timestampString = "438913643.906365"
+            timestampString = "438980940.367003"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "68"
-            endingLineNumber = "68">
+            startingLineNumber = "82"
+            endingLineNumber = "82"
+            landmarkName = "GLFuncs::triangleDrawRectXZ(double x1, double x2, double z1, double z2, double y)"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

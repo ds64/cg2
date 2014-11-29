@@ -34,6 +34,8 @@ int main(int argc, char **argv)
     glClearColor(0.3, 0.3, 0.5, 1);                             // Set background color
     glClear(GL_COLOR_BUFFER_BIT);                               // Clear OpenGL window buffer
     
+    GLFuncs::lightEnable();
+    
     glutSwapBuffers();                                          // Swap buffers for double buffering
     
     glutMainLoop();                                             // Enter OpenGL main loop

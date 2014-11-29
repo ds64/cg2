@@ -25,6 +25,8 @@ public:
     void triangleDrawRectXZ(double x1, double x2, double z1, double z2, double y);
     void triangleDrawRectYZ(double y1, double y2, double z1, double z2, double x);
     void triangleDrawRectXYZ(double x1, double x2, double y1, double y2, double z1, double z2);
+    
+    static void lightEnable();
 private:
     bool m_isFullScreen;
 };

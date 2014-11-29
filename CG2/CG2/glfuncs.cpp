@@ -43,6 +43,20 @@ GLFuncs::GLFuncs():m_isFullScreen(false)
 
 // Draw rect in Z plane
 
+void GLFuncs::lightEnable()
+{
+    glEnable(GL_LIGHT0);
+    
+    float pos[4] = {0, 30, 0, 1};
+    glLightfv(GL_LIGHT0, GL_POSITION, pos);
+    
+    float dir[3] = {0,0,0};
+    glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, dir);
+    
+    glEnable(GL_LIGHTING);
+    glEnable(GL_COLOR_MATERIAL);
+}
+
 void GLFuncs::triangleDrawRectXY(double x1, double x2, double y1, double y2, double z)
 {
     // Use triangles
