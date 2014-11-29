@@ -70,24 +70,57 @@ void GLFuncs::Display()
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(glCam.get_x(), glCam.get_y(), glCam.get_z(), 0, 0, 0, 0, 1, 0);
+    gluLookAt(glCam.get_x(), glCam.get_y(), glCam.get_z(), glCam.get_look_x(), glCam.get_look_y(), glCam.get_look_z(), 0, 1, 0);
     
     glMatrixMode(GL_PROJECTION);
     
-    glColor3dv(color_red);
-    glf.triangleDrawRectXY(-3, 3, 0, 3, 0);
     glColor3dv(color_white);
-    glf.triangleDrawRectXY(-1, 1, 1, 2, 0);
+    glf.triangleDrawRectXZ(-100, 100, -100, 100, 0);
     
     glColor3dv(color_red);
-    glf.triangleDrawRectYZ(0, 3, 0, 6, -3);
-    glColor3dv(color_white);
-    glf.triangleDrawRectYZ(1, 2, 2, 4, -3);
-    
+    glf.triangleDrawRectXY(-10, 10, 0, 10, 0);
     glColor3dv(color_red);
-    glf.triangleDrawRectYZ(0, 3, 0, 6, 3);
-    glColor3dv(color_white);
-    glf.triangleDrawRectYZ(1, 2, 2, 4, 3);
+    glf.triangleDrawRectXY(-10, 10, 0, 10, 20);
+    glColor3dv(color_red);
+    glf.triangleDrawRectYZ(0, 10, 0, 20, -10);
+    glColor3dv(color_red);
+    glf.triangleDrawRectYZ(0, 10, 0, 20, 10);
+    
+    glBegin(GL_TRIANGLES);
+    glVertex3d(-10,10,0);
+    glVertex3d(10,10,0);
+    glVertex3d(0,15,0);
+    glEnd();
+    
+    glBegin(GL_TRIANGLES);
+    glVertex3d(-10,10,20);
+    glVertex3d(10,10,20);
+    glVertex3d(0,15,20);
+    glEnd();
+    
+    glBegin(GL_TRIANGLES);
+    glVertex3d(-10,10,0);
+    glVertex3d(-10,10,20);
+    glVertex3d(0,15,0);
+    glEnd();
+    
+    glBegin(GL_TRIANGLES);
+    glVertex3d(-10,10,20);
+    glVertex3d(0,15,20);
+    glVertex3d(0,15,0);
+    glEnd();
+    
+    glBegin(GL_TRIANGLES);
+    glVertex3d(10,10,0);
+    glVertex3d(10,10,20);
+    glVertex3d(0,15,0);
+    glEnd();
+    
+    glBegin(GL_TRIANGLES);
+    glVertex3d(10,10,20);
+    glVertex3d(0,15,20);
+    glVertex3d(0,15,0);
+    glEnd();
     
     glFinish();
     
@@ -114,22 +147,38 @@ void GLFuncs::Keyboard(unsigned char key, int x, int y)
     
     if(key == 'w')
     {
-        glCam.set_camera(glCam.get_x(), glCam.get_y(), glCam.get_z() + 1);
+        glCam.set_camera(glCam.get_x(), glCam.get_y(), glCam.get_z() + 0.5);
+        glCam.set_lookPoint(glCam.get_look_x(), glCam.get_look_y(), glCam.get_look_z() + 0.5);
     }
     
     if(key == 's')
     {
-        glCam.set_camera(glCam.get_x(), glCam.get_y(), glCam.get_z() - 1);
+        glCam.set_camera(glCam.get_x(), glCam.get_y(), glCam.get_z() - 0.5);
+        glCam.set_lookPoint(glCam.get_look_x(), glCam.get_look_y(), glCam.get_look_z() - 0.5);
     }
     
     if(key == 'a')
     {
-        glCam.set_camera(glCam.get_x() - 1, glCam.get_y(), glCam.get_z());
+        glCam.set_camera(glCam.get_x() - 0.5, glCam.get_y(), glCam.get_z());
+        glCam.set_lookPoint(glCam.get_look_x() - 0.5, glCam.get_look_y(), glCam.get_look_z());
     }
     
     if(key == 'd')
     {
-        glCam.set_camera(glCam.get_x() + 1, glCam.get_y(), glCam.get_z());
+        glCam.set_camera(glCam.get_x() + 0.5, glCam.get_y(), glCam.get_z());
+        glCam.set_lookPoint(glCam.get_look_x() + 0.5, glCam.get_look_y(), glCam.get_look_z());
+    }
+    
+    if(key == 'q')
+    {
+        glCam.set_camera(glCam.get_x(), glCam.get_y() + 0.5, glCam.get_z());
+        glCam.set_lookPoint(glCam.get_look_x(), glCam.get_look_y() + 0.5, glCam.get_look_z());
+    }
+    
+    if(key == 'e')
+    {
+        glCam.set_camera(glCam.get_x(), glCam.get_y() - 0.5, glCam.get_z());
+        glCam.set_lookPoint(glCam.get_look_x(), glCam.get_look_y() - 0.5, glCam.get_look_z());
     }
 }
 
@@ -146,7 +195,7 @@ void GLFuncs::Resize(int w, int h)
     
     glFrustum(-1.0*w/h, 1.0*w/h, -1, 1, 1, 1000);
 
-    gluLookAt(glCam.get_x(), glCam.get_y(), glCam.get_z(), 0, 0, 0, 0, 1, 0);
+    gluLookAt(glCam.get_x(), glCam.get_y(), glCam.get_z(), glCam.get_look_x(), glCam.get_look_y(), glCam.get_look_z(), 0, 1, 0);
     
     glOrtho(-2.0*w/h, 2.0*w/h, -2, 2, -1, 1);
     glMatrixMode(GL_MODELVIEW);
