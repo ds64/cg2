@@ -17,6 +17,7 @@
 #include "glfuncs.h"
 #include "windowProperties.h"
 #include "camera.h"
+#include <stdlib.h>
 
 // Predefined colors
 
@@ -41,7 +42,44 @@ GLFuncs::GLFuncs():m_isFullScreen(false)
     
 }
 
-// Draw rect in Z plane
+// Load .bmp texture
+
+void GLFuncs::loadTexture(char *fileName)
+{
+    unsigned char *text;
+    
+    int w = 0, h = 0;
+    FILE *f;
+    
+    f = fopen(fileName, "rb");
+    if(f == NULL)
+        return;
+    
+    fread(&w, 2, 1, f);
+    fread(&h, 2, 1, f);
+    
+    text = (unsigned char*)malloc(3*w*h);
+    if(text == NULL)
+    {
+        fclose(f);
+        return;
+    }
+    
+    fread(text, 3, w*h, f);
+    
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, text);
+    free(text);
+    fclose(f);
+}
+
+// Enable light
 
 void GLFuncs::lightEnable()
 {
@@ -56,6 +94,8 @@ void GLFuncs::lightEnable()
     glEnable(GL_LIGHTING);
     glEnable(GL_COLOR_MATERIAL);
 }
+
+// Draw rect in Z plane
 
 void GLFuncs::triangleDrawRectXY(double x1, double x2, double y1, double y2, double z)
 {
@@ -148,6 +188,8 @@ void GLFuncs::Display()
     glf.triangleDrawRectXZ(-100, 100, -100, 100, 0);
     
     glColor3dv(color_red);
+    GLFuncs::loadTexture("/Users/playingg0d/Documents/cg2/CG2/CG2/biboran.bmp");
+    glEnable(GL_TEXTURE_2D);
     glf.triangleDrawRectXY(-10, 10, 0, 10, 0);
     glf.triangleDrawRectXY(-10, 10, 0, 10, 20);
     glf.triangleDrawRectYZ(0, 10, 0, 20, -10);

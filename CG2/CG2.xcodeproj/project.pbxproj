@@ -38,6 +38,7 @@
 		33ADE9531A28651B005AAE60 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		33ADE9551A2885C2005AAE60 /* camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = camera.cpp; sourceTree = "<group>"; };
 		33ADE9561A2885C2005AAE60 /* camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
+		33BFA3691A2A58CC006B3BBD /* biboran.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = biboran.bmp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +82,7 @@
 				33ADE9511A285C79005AAE60 /* windowProperties.h */,
 				33ADE9551A2885C2005AAE60 /* camera.cpp */,
 				33ADE9561A2885C2005AAE60 /* camera.h */,
+				33BFA3691A2A58CC006B3BBD /* biboran.bmp */,
 			);
 			path = CG2;
 			sourceTree = "<group>";

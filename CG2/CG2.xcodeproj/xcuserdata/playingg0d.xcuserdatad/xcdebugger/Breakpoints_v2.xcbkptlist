@@ -24,12 +24,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "CG2/glfuncs.cpp"
-            timestampString = "438980940.367003"
+            timestampString = "438982868.286905"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "82"
-            endingLineNumber = "82"
+            startingLineNumber = "122"
+            endingLineNumber = "122"
             landmarkName = "GLFuncs::triangleDrawRectXZ(double x1, double x2, double z1, double z2, double y)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "CG2/glfuncs.cpp"
+            timestampString = "438982885.672524"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "49"
+            endingLineNumber = "49"
+            landmarkName = "GLFuncs::loadTexture(char *fileName)"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
