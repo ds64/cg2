@@ -18,6 +18,7 @@
 #include "windowProperties.h"
 #include "camera.h"
 #include <stdlib.h>
+#include <iostream>
 
 // Predefined colors
 
@@ -44,39 +45,65 @@ GLFuncs::GLFuncs():m_isFullScreen(false)
 
 // Load .bmp texture
 
-void GLFuncs::loadTexture(char *fileName)
+GLuint GLFuncs::loadTexture(char *fileName)
 {
-    unsigned char *text;
+    unsigned char header[54];
+    unsigned int dataPos;
+    unsigned width, height;
+    unsigned int imageSize;
     
-    int w = 0, h = 0;
-    FILE *f;
+    unsigned char *data;
     
-    f = fopen(fileName, "rb");
-    if(f == NULL)
-        return;
-    
-    fread(&w, 2, 1, f);
-    fread(&h, 2, 1, f);
-    
-    text = (unsigned char*)malloc(3*w*h);
-    if(text == NULL)
+    FILE * f = fopen(fileName, "rb");
+    if(!f)
     {
-        fclose(f);
-        return;
+        std::cout << "File can not be opened" << std::endl;
+        return false;
     }
     
-    fread(text, 3, w*h, f);
+    if(fread(header, 1, 54, f)!=54)
+    {
+        std::cout << "Not a .bmp file" << std::endl;
+        return false;
+    }
     
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    if ( header[0]!='B' || header[1]!='M' )
+    {
+        std::cout << "Incorrect .bmp file" << std::endl;
+        return 0;
+    }
     
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    dataPos    = *(int*)&(header[0x0A]);
+    imageSize  = *(int*)&(header[0x22]);
+    width      = *(int*)&(header[0x12]);
+    height     = *(int*)&(header[0x16]);
     
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, w, h, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, text);
-    free(text);
+    if (imageSize==0)
+    {
+        imageSize=width*height*3;
+    }
+    if (dataPos==0)
+    {
+        dataPos=54;
+    }
+    
+    data = new unsigned char [imageSize];
+
+    fread(data,1,imageSize,f);
+    
     fclose(f);
+    
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+    
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    
+    return textureID;
 }
 
 // Enable light
