@@ -20,11 +20,9 @@ public:
     static void Resize(int w, int h);
     static void Display();
     static void Keyboard(unsigned char key, int x, int y);
-    
-    void triangleDrawRectXY(double x1, double x2, double y1, double y2, double z);
-    void triangleDrawRectXZ(double x1, double x2, double z1, double z2, double y);
-    void triangleDrawRectYZ(double y1, double y2, double z1, double z2, double x);
-    void triangleDrawRectXYZ(double x1, double x2, double y1, double y2, double z1, double z2);
+    static void Mouse(int button, int state, int x, int y);
+    static void MouseMotion(int x, int y);
+    static void Special(int key, int x, int y);
     
     static void lightEnable();
     

@@ -19,6 +19,7 @@
 #include "camera.h"
 #include <stdlib.h>
 #include <iostream>
+#include <math.h>
 
 // Predefined colors
 
@@ -34,6 +35,8 @@ double color_white[3] = {1.0f, 1.0f, 1.0f};
 windowProperties wp = *new windowProperties(false, 0, 0, 640, 480);
 glCamera glCam = *new glCamera();
 GLFuncs glf = *new GLFuncs();
+
+float x_angle = 0, y_angle = 0;
 
 // GLFuncs default constructor
 // Fullscreen sets to false
@@ -82,6 +85,7 @@ GLuint GLFuncs::loadTexture(const char *fileName)
     {
         imageSize=width*height*3;
     }
+    
     if (dataPos==0)
     {
         dataPos=54;
@@ -99,9 +103,12 @@ GLuint GLFuncs::loadTexture(const char *fileName)
     glBindTexture(GL_TEXTURE_2D, textureID);
     
     glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+    //gluBuild2DMipmaps(GL_TEXTURE_2D, 3, width, height, GL_BGR, GL_UNSIGNED_BYTE, data);
     
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     
     return textureID;
 }
@@ -112,88 +119,44 @@ void GLFuncs::lightEnable()
 {
     glEnable(GL_LIGHT0);
     
-    float pos[4] = {0, 30, 0, 1};
+    float pos[4] = {0, 15, 20, 1};
     glLightfv(GL_LIGHT0, GL_POSITION, pos);
     
     float dir[3] = {0,0,0};
     glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, dir);
     
+    glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0.5);
+    glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.2);
+    glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.5);
+    
     glEnable(GL_LIGHTING);
     glEnable(GL_COLOR_MATERIAL);
 }
 
-// Draw rect in Z plane
+// Mouse function
 
-void GLFuncs::triangleDrawRectXY(double x1, double x2, double y1, double y2, double z)
+void GLFuncs::Mouse(int button, int state, int x, int y)
 {
-    // Use triangles
-    glBegin(GL_TRIANGLES);
-    // First triangle vertices
-    glVertex3d(x1, y1, z);
-    glVertex3d(x2, y2, z);
-    glVertex3d(x2, y1, z);
-    // Second triangle vertices
-    glVertex3d(x2, y2, z);
-    glVertex3d(x1, y1, z);
-    glVertex3d(x1, y2, z);
-    glEnd();
+    
 }
 
-// Draw rect in Y plane
+// Mouse motion function
 
-void GLFuncs::triangleDrawRectXZ(double x1, double x2, double z1, double z2, double y)
+void GLFuncs::MouseMotion(int x, int y)
 {
-    // Use triangles
-    glBegin(GL_TRIANGLES);
-    // First triangle vertices
-    glVertex3d(x1, y, z1);
-    glVertex3d(x2, y, z2);
-    glVertex3d(x2, y, z1);
-    // Second triangle vertices
-    glVertex3d(x2, y, z2);
-    glVertex3d(x1, y, z1);
-    glVertex3d(x1, y, z2);
-    glEnd();
-}
+    //cur_mouse_x = x;
+    //cur_mouse_y = y;
 
-// Draw rect in Z plane
-
-void GLFuncs::triangleDrawRectYZ(double y1, double y2, double z1, double z2, double x)
-{
-    // Use triangles
-    glBegin(GL_TRIANGLES);
-    // First triangle vertices
-    glVertex3d(x, y1, z1);
-    glVertex3d(x, y2, z2);
-    glVertex3d(x, y2, z1);
-    // Second triangle vertices
-    glVertex3d(x, y2, z2);
-    glVertex3d(x, y1, z1);
-    glVertex3d(x, y1, z2);
-    glEnd();
-}
-
-// Draw rect with triangles
-
-void GLFuncs::triangleDrawRectXYZ(double x1, double x2, double y1, double y2, double z1, double z2)
-{
-    // Use triangles
-    glBegin(GL_TRIANGLES);
-    // First triangle vertices
-    glVertex3d(x1,y1,z1);
-    glVertex3d(x1,y1,z2);
-    glVertex3d(x2,y2,z1);
-    // Second triangle vertices
-    glVertex3d(x1,y1,z2);
-    glVertex3d(x2,y2,z2);
-    glVertex3d(x2,y2,z1);
-    glEnd();
+    //x_angle += (float)((x - cur_mouse_x)/5.0f);
+    //cur_mouse_x = x;
+    
+    // update camera's direction
 }
 
 // Idle function
 
 void GLFuncs::Idle()
-{
+{ 
     glutPostRedisplay();            // Redisplay buffer
 }
 
@@ -205,22 +168,91 @@ void GLFuncs::Display()
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    glFrustum(-1, 1, -1, 1, 0.5, 1000);
+    
+    gluLookAt(0, 5, 3, 0, 5, 0, 0, 1, 0);
+    
+    glOrtho(-1.0, 1.0, -1, 1, -1, 1);
     // Set camera to new value
-    gluLookAt(glCam.get_x(), glCam.get_y(), glCam.get_z(), glCam.get_look_x(), glCam.get_look_y(), glCam.get_look_z(), 0, 1, 0);
+    //gluLookAt(glCam.get_x(), glCam.get_y(), glCam.get_z(), glCam.get_look_x(), glCam.get_look_y(), glCam.get_look_z(), 0, 1, 0);
+    
+    glTranslated(glCam.get_x(), glCam.get_y(), glCam.get_z());
+    glRotated(x_angle,0,1,0);
+    glRotated(y_angle,1,0,0);
     
     glMatrixMode(GL_PROJECTION);
     
     // Render house
     glColor3dv(color_white);
-    glf.triangleDrawRectXZ(-100, 100, -100, 100, 0);
-    
-    glColor3dv(color_red);
-    GLFuncs::loadTexture("/Users/playingg0d/Documents/cg2/CG2/CG2/biboran.bmp");
+//    glEnable(GL_TEXTURE_2D);
+    //glBindTexture(GL_TEXTURE_2D, 1);
+    glBegin(GL_QUADS);
+    glTexCoord2d(0, 0);
+    glVertex3d(-100,0,-100);
+    glTexCoord2d(0, 50);
+    glVertex3d(-100, 0, 100);
+    glTexCoord2d(50, 50);
+    glVertex3d(100,0,100);
+    glTexCoord2d(50, 0);
+    glVertex3d(100, 0, -100);
+    glEnd();
+//    glDisable(GL_TEXTURE_2D);
+
     glEnable(GL_TEXTURE_2D);
-    glf.triangleDrawRectXY(-10, 10, 0, 10, 0);
-    glf.triangleDrawRectXY(-10, 10, 0, 10, 20);
-    glf.triangleDrawRectYZ(0, 10, 0, 20, -10);
-    glf.triangleDrawRectYZ(0, 10, 0, 20, 10);
+    glBindTexture(GL_TEXTURE_2D, 1);
+    glBegin(GL_QUADS);
+    glTexCoord2d(0, 0);
+    glVertex3d(-10, 0, 10);
+    glTexCoord2d(0, 1);
+    glVertex3d(-10, 10, 10);
+    glTexCoord2d(1, 1);
+    glVertex3d(-10,10,30);
+    glTexCoord2d(1, 0);
+    glVertex3d(-10, 0, 30);
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
+    
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 1);
+    glBegin(GL_QUADS);
+    glTexCoord2d(0, 0);
+    glVertex3d(10, 0, 10);
+    glTexCoord2d(0, 1);
+    glVertex3d(10, 10, 10);
+    glTexCoord2d(1, 1);
+    glVertex3d(10,10,30);
+    glTexCoord2d(1, 0);
+    glVertex3d(10, 0, 30);
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
+    
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 1);
+    glBegin(GL_QUADS);
+    glTexCoord2d(0, 0);
+    glVertex3d(-10, 0, 30);
+    glTexCoord2d(0, 1);
+    glVertex3d(-10, 10, 30);
+    glTexCoord2d(1, 1);
+    glVertex3d(10,10,30);
+    glTexCoord2d(1, 0);
+    glVertex3d(10, 0, 30);
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
+    
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 1);
+    glBegin(GL_QUADS);
+    glTexCoord2d(0, 0);
+    glVertex3d(-10, 0, 10);
+    glTexCoord2d(0, 1);
+    glVertex3d(-10, 10, 10);
+    glTexCoord2d(1, 1);
+    glVertex3d(10,10,10);
+    glTexCoord2d(1, 0);
+    glVertex3d(10, 0, 10);
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
     
     glBegin(GL_TRIANGLES);
     glVertex3d(-10,10,0);
@@ -232,11 +264,8 @@ void GLFuncs::Display()
     glVertex3d(-10,10,20);
     glVertex3d(10,10,20);
     glVertex3d(0,15,20);
-    glEnd();
-    
-    glf.triangleDrawRectXYZ(-10, 0, 10, 15, 0, 20);
-    glf.triangleDrawRectXYZ(10, 0, 10, 15, 0, 20);
-    
+    glEnd();  
+ 
     glFinish();
     
     glutSwapBuffers();          // Swap buffers
@@ -270,43 +299,58 @@ void GLFuncs::Keyboard(unsigned char key, int x, int y)
     // Go forward
     if(key == 'w')
     {
-        glCam.set_camera(glCam.get_x(), glCam.get_y(), glCam.get_z() + 0.5);
-        glCam.set_lookPoint(glCam.get_look_x(), glCam.get_look_y(), glCam.get_look_z() + 0.5);
+        glCam.set_camera(glCam.get_x(), glCam.get_y(), glCam.get_z() - 0.5);
     }
     
     // Go back
     if(key == 's')
     {
-        glCam.set_camera(glCam.get_x(), glCam.get_y(), glCam.get_z() - 0.5);
-        glCam.set_lookPoint(glCam.get_look_x(), glCam.get_look_y(), glCam.get_look_z() - 0.5);
+        glCam.set_camera(glCam.get_x(), glCam.get_y(), glCam.get_z() + 0.5);
     }
     
     // Go left
     if(key == 'a')
     {
-        glCam.set_camera(glCam.get_x() - 0.5, glCam.get_y(), glCam.get_z());
-        glCam.set_lookPoint(glCam.get_look_x() - 0.5, glCam.get_look_y(), glCam.get_look_z());
+        glCam.set_camera(glCam.get_x() + 0.5, glCam.get_y(), glCam.get_z());
     }
     
     // Go right
     if(key == 'd')
     {
-        glCam.set_camera(glCam.get_x() + 0.5, glCam.get_y(), glCam.get_z());
-        glCam.set_lookPoint(glCam.get_look_x() + 0.5, glCam.get_look_y(), glCam.get_look_z());
+        glCam.set_camera(glCam.get_x() - 0.5, glCam.get_y(), glCam.get_z());
     }
     
     // Go up
     if(key == 'q')
     {
         glCam.set_camera(glCam.get_x(), glCam.get_y() + 0.5, glCam.get_z());
-        glCam.set_lookPoint(glCam.get_look_x(), glCam.get_look_y() + 0.5, glCam.get_look_z());
     }
     
     // Go down
     if(key == 'e')
     {
         glCam.set_camera(glCam.get_x(), glCam.get_y() - 0.5, glCam.get_z());
-        glCam.set_lookPoint(glCam.get_look_x(), glCam.get_look_y() - 0.5, glCam.get_look_z());
+    }
+}
+
+void GLFuncs::Special(int key, int x, int y)
+{
+    if(key == GLUT_KEY_LEFT && x_angle < 45.0f)
+    {
+        x_angle += 5.0f;
+    }
+    if(key == GLUT_KEY_RIGHT && x_angle > -45.0f)
+    {
+        x_angle -= 5.0f;
+    }
+    
+    if(key == GLUT_KEY_UP && y_angle < 45.0f)
+    {
+        y_angle += 5.0f;
+    }
+    if(key == GLUT_KEY_DOWN && y_angle >= 0.0f)
+    {
+        y_angle -= 5.0f;
     }
 }
 
@@ -319,15 +363,5 @@ void GLFuncs::Resize(int w, int h)
         wp.set_size(w, h);
     }
     
-    // Set camera
     glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    
-    glFrustum(-1.0*w/h, 1.0*w/h, -1, 1, 1, 1000);
-
-    gluLookAt(glCam.get_x(), glCam.get_y(), glCam.get_z(), glCam.get_look_x(), glCam.get_look_y(), glCam.get_look_z(), 0, 1, 0);
-    
-    glOrtho(-2.0*w/h, 2.0*w/h, -2, 2, -1, 1);
-    glMatrixMode(GL_MODELVIEW);
 }
