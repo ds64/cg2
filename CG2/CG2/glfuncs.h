@@ -28,7 +28,7 @@ public:
     
     static void lightEnable();
     
-    static GLuint loadTexture(char* fileName);
+    static GLuint loadTexture(const char* fileName);
 private:
     bool m_isFullScreen;
 };

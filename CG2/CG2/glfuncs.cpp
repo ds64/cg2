@@ -45,7 +45,7 @@ GLFuncs::GLFuncs():m_isFullScreen(false)
 
 // Load .bmp texture
 
-GLuint GLFuncs::loadTexture(char *fileName)
+GLuint GLFuncs::loadTexture(const char *fileName)
 {
     unsigned char header[54];
     unsigned int dataPos;
