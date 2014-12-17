@@ -56,7 +56,6 @@ GLFuncs::GLFuncs():m_isFullScreen(false)
 GLuint GLFuncs::loadTexture(const char *fileName)
 {
     unsigned char header[54];
-    unsigned int dataPos;
     unsigned width, height;
     unsigned int imageSize;
     
@@ -81,7 +80,6 @@ GLuint GLFuncs::loadTexture(const char *fileName)
         return 0;
     }
     
-    dataPos    = *(int*)&(header[0x0A]);
     imageSize  = *(int*)&(header[0x22]);
     width      = *(int*)&(header[0x12]);
     height     = *(int*)&(header[0x16]);
@@ -89,11 +87,6 @@ GLuint GLFuncs::loadTexture(const char *fileName)
     if (imageSize==0)
     {
         imageSize=width*height*3;
-    }
-    
-    if (dataPos==0)
-    {
-        dataPos=54;
     }
     
     data = new unsigned char [imageSize];
