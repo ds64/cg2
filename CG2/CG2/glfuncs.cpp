@@ -38,6 +38,11 @@ GLFuncs glf = *new GLFuncs();
 
 float x_angle = 0, y_angle = 0;
 
+float x_restrict_1 = 12, x_restrict2 = -12;
+float z_restrict_1 = -12, z_restrict2 = -32;
+
+bool door = false;
+
 // GLFuncs default constructor
 // Fullscreen sets to false
 
@@ -133,24 +138,18 @@ void GLFuncs::lightEnable()
     glEnable(GL_COLOR_MATERIAL);
 }
 
-// Mouse function
+// Enable fog
 
-void GLFuncs::Mouse(int button, int state, int x, int y)
+void GLFuncs::fogEnable()
 {
+    float fog[4] = {0.1, 0.5, 0.7, 1};
     
-}
-
-// Mouse motion function
-
-void GLFuncs::MouseMotion(int x, int y)
-{
-    //cur_mouse_x = x;
-    //cur_mouse_y = y;
-
-    //x_angle += (float)((x - cur_mouse_x)/5.0f);
-    //cur_mouse_x = x;
+    glEnable(GL_FOG);
     
-    // update camera's direction
+    glFogf(GL_FOG_MODE, GL_LINEAR);
+    glFogf(GL_FOG_START, 0);
+    glFogf(GL_FOG_END, 50);
+    glFogfv(GL_FOG_COLOR, fog);
 }
 
 // Idle function
@@ -173,8 +172,6 @@ void GLFuncs::Display()
     gluLookAt(0, 5, 3, 0, 5, 0, 0, 1, 0);
     
     glOrtho(-1.0, 1.0, -1, 1, -1, 1);
-    // Set camera to new value
-    //gluLookAt(glCam.get_x(), glCam.get_y(), glCam.get_z(), glCam.get_look_x(), glCam.get_look_y(), glCam.get_look_z(), 0, 1, 0);
     
     glTranslated(glCam.get_x(), glCam.get_y(), glCam.get_z());
     glRotated(x_angle,0,1,0);
@@ -184,8 +181,6 @@ void GLFuncs::Display()
     
     // Render house
     glColor3dv(color_white);
-//    glEnable(GL_TEXTURE_2D);
-    //glBindTexture(GL_TEXTURE_2D, 1);
     glBegin(GL_QUADS);
     glTexCoord2d(0, 0);
     glVertex3d(-100,0,-100);
@@ -196,7 +191,49 @@ void GLFuncs::Display()
     glTexCoord2d(50, 0);
     glVertex3d(100, 0, -100);
     glEnd();
-//    glDisable(GL_TEXTURE_2D);
+    
+    glBegin(GL_QUADS);
+    glVertex3d(-10,10,10);
+    glVertex3d(0,15,10);
+    glVertex3d(0,15,30);
+    glVertex3d(-10,10,30);
+    glEnd();
+    
+    glBegin(GL_QUADS);
+    glVertex3d(10,10,10);
+    glVertex3d(0,15,10);
+    glVertex3d(0,15,30);
+    glVertex3d(10,10,30);
+    glEnd();
+    
+    glColor3d(0.7, 0, 0);
+    glBegin(GL_TRIANGLES);
+    glVertex3d(-10,10,30);
+    glVertex3d(10,10,30);
+    glVertex3d(0,15,30);
+    glEnd();
+    
+    glBegin(GL_TRIANGLES);
+    glVertex3d(-10,10,10);
+    glVertex3d(10,10,10);
+    glVertex3d(0,15,10);
+    glEnd();
+    
+    glColor3dv(color_white);
+    
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 1);
+    glBegin(GL_QUADS);
+    glTexCoord2d(0, 0);
+    glVertex3d(-10, 0, 30);
+    glTexCoord2d(0, 1);
+    glVertex3d(-10, 10, 30);
+    glTexCoord2d(1, 1);
+    glVertex3d(10,10,30);
+    glTexCoord2d(1, 0);
+    glVertex3d(10, 0, 30);
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, 1);
@@ -230,13 +267,13 @@ void GLFuncs::Display()
     glBindTexture(GL_TEXTURE_2D, 1);
     glBegin(GL_QUADS);
     glTexCoord2d(0, 0);
-    glVertex3d(-10, 0, 30);
+    glVertex3d(-10, 0, 10);
     glTexCoord2d(0, 1);
-    glVertex3d(-10, 10, 30);
+    glVertex3d(-10, 10, 10);
     glTexCoord2d(1, 1);
-    glVertex3d(10,10,30);
+    glVertex3d(-2,10,10);
     glTexCoord2d(1, 0);
-    glVertex3d(10, 0, 30);
+    glVertex3d(-2, 0, 10);
     glEnd();
     glDisable(GL_TEXTURE_2D);
     
@@ -244,9 +281,9 @@ void GLFuncs::Display()
     glBindTexture(GL_TEXTURE_2D, 1);
     glBegin(GL_QUADS);
     glTexCoord2d(0, 0);
-    glVertex3d(-10, 0, 10);
+    glVertex3d(2, 0, 10);
     glTexCoord2d(0, 1);
-    glVertex3d(-10, 10, 10);
+    glVertex3d(2, 10, 10);
     glTexCoord2d(1, 1);
     glVertex3d(10,10,10);
     glTexCoord2d(1, 0);
@@ -254,17 +291,40 @@ void GLFuncs::Display()
     glEnd();
     glDisable(GL_TEXTURE_2D);
     
-    glBegin(GL_TRIANGLES);
-    glVertex3d(-10,10,0);
-    glVertex3d(10,10,0);
-    glVertex3d(0,15,0);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, 1);
+    glBegin(GL_QUADS);
+    glTexCoord2d(0, 0);
+    glVertex3d(-2, 6, 10);
+    glTexCoord2d(0, 0.5);
+    glVertex3d(-2, 10, 10);
+    glTexCoord2d(0.5, 0.5);
+    glVertex3d(2,10,10);
+    glTexCoord2d(0.5, 0);
+    glVertex3d(2, 6, 10);
     glEnd();
+    glDisable(GL_TEXTURE_2D);
     
-    glBegin(GL_TRIANGLES);
-    glVertex3d(-10,10,20);
-    glVertex3d(10,10,20);
-    glVertex3d(0,15,20);
-    glEnd();  
+    if(door == false)
+    {
+        glColor3d(0,0.5,0);
+        glBegin(GL_QUADS);
+        glVertex3d(-2, 0, 10);
+        glVertex3d(-2, 6, 10);
+        glVertex3d(2, 6,10);
+        glVertex3d(2, 0, 10);
+        glEnd();
+    }
+    else
+    {
+        glColor3d(0,0.5,0);
+        glBegin(GL_QUADS);
+        glVertex3d(-2, 0, 10);
+        glVertex3d(-2, 6, 10);
+        glVertex3d(-2, 6, 6);
+        glVertex3d(-2, 0, 6);
+        glEnd();
+    }
  
     glFinish();
     
@@ -297,9 +357,13 @@ void GLFuncs::Keyboard(unsigned char key, int x, int y)
     }
     
     // Go forward
-    if(key == 'w')
+    if((key == 'w') && ((glCam.get_z() > z_restrict_1) || door != true))
     {
         glCam.set_camera(glCam.get_x(), glCam.get_y(), glCam.get_z() - 0.5);
+    }
+    else
+    {
+        door = true;
     }
     
     // Go back
@@ -309,27 +373,15 @@ void GLFuncs::Keyboard(unsigned char key, int x, int y)
     }
     
     // Go left
-    if(key == 'a')
+    if(key == 'a' && (glCam.get_x() < x_restrict_1))
     {
         glCam.set_camera(glCam.get_x() + 0.5, glCam.get_y(), glCam.get_z());
     }
     
     // Go right
-    if(key == 'd')
+    if(key == 'd' && (glCam.get_x() > x_restrict2))
     {
         glCam.set_camera(glCam.get_x() - 0.5, glCam.get_y(), glCam.get_z());
-    }
-    
-    // Go up
-    if(key == 'q')
-    {
-        glCam.set_camera(glCam.get_x(), glCam.get_y() + 0.5, glCam.get_z());
-    }
-    
-    // Go down
-    if(key == 'e')
-    {
-        glCam.set_camera(glCam.get_x(), glCam.get_y() - 0.5, glCam.get_z());
     }
 }
 

@@ -24,20 +24,19 @@ int main(int argc, char **argv)
                                                                 // Z buffer (depth)
     glutInitWindowPosition(0, 0);                               // Initial position set to 0,0
     glutInitWindowSize(640, 480);                               // Default resolution 640x480
-    glutCreateWindow("ANSHA ABDUL");                            // Window title
+    glutCreateWindow("Bogdanov Andrey 4105");                   // Window title
     
     glutDisplayFunc(GLFuncs::Display);                          // OpenGL Display handler set
     glutKeyboardFunc(GLFuncs::Keyboard);                        // OpenGL Keyboard handler set
     glutReshapeFunc(GLFuncs::Resize);                           // OpenGL Resize handler set
     glutIdleFunc(GLFuncs::Idle);                                // OpenGL Idle handler set
-    glutMouseFunc(GLFuncs::Mouse);                              // OpenGL Mouse handler
-    glutMotionFunc(GLFuncs::MouseMotion);                       // OpenGL Mouse Motion handler
     glutSpecialFunc(GLFuncs::Special);                          // OpenGL Special Keyboard handler
     
     glClearColor(0.3, 0.3, 0.5, 1);                             // Set background color
     glClear(GL_COLOR_BUFFER_BIT);                               // Clear OpenGL window buffer
     
     GLFuncs::lightEnable();
+    GLFuncs::fogEnable();
     GLFuncs::loadTexture("/Users/playingg0d/Documents/Projects/cg2/CG2/CG2/Wood.bmp");
     
     glutSwapBuffers();                                          // Swap buffers for double buffering

@@ -20,11 +20,10 @@ public:
     static void Resize(int w, int h);
     static void Display();
     static void Keyboard(unsigned char key, int x, int y);
-    static void Mouse(int button, int state, int x, int y);
-    static void MouseMotion(int x, int y);
     static void Special(int key, int x, int y);
     
     static void lightEnable();
+    static void fogEnable();
     
     static GLuint loadTexture(const char* fileName);
 private:
