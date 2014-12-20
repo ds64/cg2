@@ -35,6 +35,10 @@ int main(int argc, char **argv)
     glClearColor(0.3, 0.3, 0.5, 1);                             // Set background color
     glClear(GL_COLOR_BUFFER_BIT);                               // Clear OpenGL window buffer
     
+    glEnable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
     GLFuncs::lightEnable();
     GLFuncs::fogEnable();
     GLFuncs::loadTexture("/Users/playingg0d/Documents/Projects/cg2/CG2/CG2/Wood.bmp");

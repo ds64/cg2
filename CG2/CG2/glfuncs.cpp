@@ -21,6 +21,8 @@
 #include <iostream>
 #include <math.h>
 
+#define DEBUG_MODE 1
+
 // Predefined colors
 
 double color_red[3] = {1.0f, 0.0f, 0.0f};
@@ -52,7 +54,6 @@ GLFuncs::GLFuncs():m_isFullScreen(false)
 }
 
 // Load .bmp texture
-
 GLuint GLFuncs::loadTexture(const char *fileName)
 {
     unsigned char header[54];
@@ -101,7 +102,6 @@ GLuint GLFuncs::loadTexture(const char *fileName)
     glBindTexture(GL_TEXTURE_2D, textureID);
     
     glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
-    //gluBuild2DMipmaps(GL_TEXTURE_2D, 3, width, height, GL_BGR, GL_UNSIGNED_BYTE, data);
     
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -115,19 +115,13 @@ GLuint GLFuncs::loadTexture(const char *fileName)
 
 void GLFuncs::lightEnable()
 {
-    glEnable(GL_LIGHT0);
-    
-    float pos[4] = {0, 15, 20, 1};
-    glLightfv(GL_LIGHT0, GL_POSITION, pos);
-    
-    float dir[3] = {0,0,0};
-    glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, dir);
-    
-    glLightf(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 0.5);
-    glLightf(GL_LIGHT0, GL_LINEAR_ATTENUATION, 0.2);
-    glLightf(GL_LIGHT0, GL_QUADRATIC_ATTENUATION, 0.5);
-    
     glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT1);
+    
+    glEnable(GL_NORMALIZE);
+    
+    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+    
     glEnable(GL_COLOR_MATERIAL);
 }
 
@@ -141,7 +135,7 @@ void GLFuncs::fogEnable()
     
     glFogf(GL_FOG_MODE, GL_LINEAR);
     glFogf(GL_FOG_START, 0);
-    glFogf(GL_FOG_END, 50);
+    glFogf(GL_FOG_END, 70);
     glFogfv(GL_FOG_COLOR, fog);
 }
 
@@ -155,61 +149,69 @@ void GLFuncs::Idle()
 // Display function
 
 void GLFuncs::Display()
-{
+{    
+    glLoadIdentity();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);     // Clear color and depth buffers
     
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glFrustum(-1, 1, -1, 1, 0.5, 1000);
-    
-    gluLookAt(0, 5, 3, 0, 5, 0, 0, 1, 0);
-    
-    glOrtho(-1.0, 1.0, -1, 1, -1, 1);
+    GLfloat mat_dif[] = {0.3,0.3,0.3,1.0};
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, mat_dif);
     
     glTranslated(glCam.get_x(), glCam.get_y(), glCam.get_z());
-    glRotated(x_angle,0,1,0);
-    glRotated(y_angle,1,0,0);
+   
+#ifdef DEBUG_MODE
+    std::cout << "Current position: [" << glCam.get_x() << ";" <<
+              glCam.get_y() << ";" << glCam.get_z() << "]" << std::endl;
+#endif
     
-    glMatrixMode(GL_PROJECTION);
+    glRotatef(360.0f - y_angle, 0, 1.0f,0);
+    glRotatef(360.0f - x_angle, 1.0f, 0,0);
+
+    // Render plane
+    glColor3dv(color_white);
+    for(float i = -60; i < 60; i+=0.5)
+    {
+        for(float j = -60; j < 60; j+=0.5)
+        {
+            glBegin(GL_QUADS);
+            glNormal3d(0,1,0);
+            glTexCoord2d(0, 0);
+            glVertex3d(i,-4,j);
+            glTexCoord2d(0, 50);
+            glVertex3d(i, -4, j+1);
+            glTexCoord2d(50, 50);
+            glVertex3d(i+1,-4,j+1);
+            glTexCoord2d(50, 0);
+            glVertex3d(i+1, -4, j);
+            glEnd();
+        }
+    }
     
     // Render house
-    glColor3dv(color_white);
     glBegin(GL_QUADS);
-    glTexCoord2d(0, 0);
-    glVertex3d(-100,0,-100);
-    glTexCoord2d(0, 50);
-    glVertex3d(-100, 0, 100);
-    glTexCoord2d(50, 50);
-    glVertex3d(100,0,100);
-    glTexCoord2d(50, 0);
-    glVertex3d(100, 0, -100);
+    glVertex3d(-10,10,-10);
+    glVertex3d(0,15,-10);
+    glVertex3d(0,15,-30);
+    glVertex3d(-10,10,-30);
     glEnd();
     
     glBegin(GL_QUADS);
-    glVertex3d(-10,10,10);
-    glVertex3d(0,15,10);
-    glVertex3d(0,15,30);
-    glVertex3d(-10,10,30);
-    glEnd();
-    
-    glBegin(GL_QUADS);
-    glVertex3d(10,10,10);
-    glVertex3d(0,15,10);
-    glVertex3d(0,15,30);
-    glVertex3d(10,10,30);
+    glVertex3d(10,10,-10);
+    glVertex3d(0,15,-10);
+    glVertex3d(0,15,-30);
+    glVertex3d(10,10,-30);
     glEnd();
     
     glColor3d(0.7, 0, 0);
     glBegin(GL_TRIANGLES);
-    glVertex3d(-10,10,30);
-    glVertex3d(10,10,30);
-    glVertex3d(0,15,30);
+    glVertex3d(-10,10,-30);
+    glVertex3d(10,10,-30);
+    glVertex3d(0,15,-30);
     glEnd();
     
     glBegin(GL_TRIANGLES);
-    glVertex3d(-10,10,10);
-    glVertex3d(10,10,10);
-    glVertex3d(0,15,10);
+    glVertex3d(-10,10,-10);
+    glVertex3d(10,10,-10);
+    glVertex3d(0,15,-10);
     glEnd();
     
     glColor3dv(color_white);
@@ -218,13 +220,13 @@ void GLFuncs::Display()
     glBindTexture(GL_TEXTURE_2D, 1);
     glBegin(GL_QUADS);
     glTexCoord2d(0, 0);
-    glVertex3d(-10, 0, 30);
+    glVertex3d(-10, -4, -30);
     glTexCoord2d(0, 1);
-    glVertex3d(-10, 10, 30);
+    glVertex3d(-10, 10, -30);
     glTexCoord2d(1, 1);
-    glVertex3d(10,10,30);
+    glVertex3d(10,10,-30);
     glTexCoord2d(1, 0);
-    glVertex3d(10, 0, 30);
+    glVertex3d(10, -4, -30);
     glEnd();
     glDisable(GL_TEXTURE_2D);
 
@@ -232,13 +234,13 @@ void GLFuncs::Display()
     glBindTexture(GL_TEXTURE_2D, 1);
     glBegin(GL_QUADS);
     glTexCoord2d(0, 0);
-    glVertex3d(-10, 0, 10);
+    glVertex3d(-10, -4, -10);
     glTexCoord2d(0, 1);
-    glVertex3d(-10, 10, 10);
+    glVertex3d(-10, 10, -10);
     glTexCoord2d(1, 1);
-    glVertex3d(-10,10,30);
+    glVertex3d(-10,10,-30);
     glTexCoord2d(1, 0);
-    glVertex3d(-10, 0, 30);
+    glVertex3d(-10, -4, -30);
     glEnd();
     glDisable(GL_TEXTURE_2D);
     
@@ -246,13 +248,13 @@ void GLFuncs::Display()
     glBindTexture(GL_TEXTURE_2D, 1);
     glBegin(GL_QUADS);
     glTexCoord2d(0, 0);
-    glVertex3d(10, 0, 10);
+    glVertex3d(10, -4, -10);
     glTexCoord2d(0, 1);
-    glVertex3d(10, 10, 10);
+    glVertex3d(10, 10, -10);
     glTexCoord2d(1, 1);
-    glVertex3d(10,10,30);
+    glVertex3d(10,10,-30);
     glTexCoord2d(1, 0);
-    glVertex3d(10, 0, 30);
+    glVertex3d(10, -4, -30);
     glEnd();
     glDisable(GL_TEXTURE_2D);
     
@@ -260,13 +262,13 @@ void GLFuncs::Display()
     glBindTexture(GL_TEXTURE_2D, 1);
     glBegin(GL_QUADS);
     glTexCoord2d(0, 0);
-    glVertex3d(-10, 0, 10);
+    glVertex3d(-10, -4, -10);
     glTexCoord2d(0, 1);
-    glVertex3d(-10, 10, 10);
+    glVertex3d(-10, 10, -10);
     glTexCoord2d(1, 1);
-    glVertex3d(-2,10,10);
+    glVertex3d(-2,10,-10);
     glTexCoord2d(1, 0);
-    glVertex3d(-2, 0, 10);
+    glVertex3d(-2, -4, -10);
     glEnd();
     glDisable(GL_TEXTURE_2D);
     
@@ -274,13 +276,13 @@ void GLFuncs::Display()
     glBindTexture(GL_TEXTURE_2D, 1);
     glBegin(GL_QUADS);
     glTexCoord2d(0, 0);
-    glVertex3d(2, 0, 10);
+    glVertex3d(2, -4, -10);
     glTexCoord2d(0, 1);
-    glVertex3d(2, 10, 10);
+    glVertex3d(2, 10, -10);
     glTexCoord2d(1, 1);
-    glVertex3d(10,10,10);
+    glVertex3d(10,10,-10);
     glTexCoord2d(1, 0);
-    glVertex3d(10, 0, 10);
+    glVertex3d(10, -4, -10);
     glEnd();
     glDisable(GL_TEXTURE_2D);
     
@@ -288,38 +290,70 @@ void GLFuncs::Display()
     glBindTexture(GL_TEXTURE_2D, 1);
     glBegin(GL_QUADS);
     glTexCoord2d(0, 0);
-    glVertex3d(-2, 6, 10);
+    glVertex3d(-2, 6, -10);
     glTexCoord2d(0, 0.5);
-    glVertex3d(-2, 10, 10);
+    glVertex3d(-2, 10, -10);
     glTexCoord2d(0.5, 0.5);
-    glVertex3d(2,10,10);
+    glVertex3d(2,10,-10);
     glTexCoord2d(0.5, 0);
-    glVertex3d(2, 6, 10);
+    glVertex3d(2, 6, -10);
     glEnd();
     glDisable(GL_TEXTURE_2D);
     
+    // Render door
     if(door == false)
     {
         glColor3d(0,0.5,0);
         glBegin(GL_QUADS);
-        glVertex3d(-2, 0, 10);
-        glVertex3d(-2, 6, 10);
-        glVertex3d(2, 6,10);
-        glVertex3d(2, 0, 10);
+        glVertex3d(-2, -4, -10);
+        glVertex3d(-2, 6, -10);
+        glVertex3d(2, 6,-10);
+        glVertex3d(2, -4, -10);
         glEnd();
     }
     else
     {
         glColor3d(0,0.5,0);
         glBegin(GL_QUADS);
-        glVertex3d(-2, 0, 10);
-        glVertex3d(-2, 6, 10);
-        glVertex3d(-2, 6, 6);
-        glVertex3d(-2, 0, 6);
+        glVertex3d(-2, -4, -10);
+        glVertex3d(-2, 6, -10);
+        glVertex3d(-2, 6, -6);
+        glVertex3d(-2, -4, -6);
         glEnd();
     }
- 
-    glFinish();
+    
+    if(door == true)
+    {
+        glEnable(GL_LIGHT0);
+        glDisable(GL_LIGHT1);
+    }
+    else
+    {
+        glEnable(GL_LIGHT1);
+        glDisable(GL_LIGHT0);
+    }
+    
+    GLfloat light0_diffuse[3] = {1.0, 1.0, 1.0};
+    GLfloat light0_position[4] = {0, 3, -10.0, 1.0};
+    GLfloat light0_spot_direction[3] = {0.0, -1.0, 0.0};
+    GLfloat light0_spot_cutoff = 20.0f;
+    
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
+    glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+    glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, light0_spot_cutoff);
+    glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, light0_spot_direction);
+    
+    GLfloat light1_specular[3] = {0.7, 0.5, 0.0};
+    GLfloat light1_position[4] = {0, 5, 0.0, 1.0};
+    GLfloat light1_spot_direction[3] = {0.0, -1.0, 0.0};
+    GLfloat light1_spot_cutoff = 90.0f;
+    
+    glLightfv(GL_LIGHT1, GL_AMBIENT, light1_specular);
+    glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+    glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, light1_spot_cutoff);
+    glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1_spot_direction);
+    
+    glFlush();
     
     glutSwapBuffers();          // Swap buffers
 }
@@ -350,52 +384,54 @@ void GLFuncs::Keyboard(unsigned char key, int x, int y)
     }
     
     // Go forward
-    if((key == 'w') && ((glCam.get_z() > z_restrict_1) || door != true))
+    if(key == 's')
     {
         glCam.set_camera(glCam.get_x(), glCam.get_y(), glCam.get_z() - 0.5);
     }
-    else
+    
+    // Open door
+    if(key == 'e')
     {
-        door = true;
+        door = !door;
     }
     
     // Go back
-    if(key == 's')
+    if(key == 'w')
     {
         glCam.set_camera(glCam.get_x(), glCam.get_y(), glCam.get_z() + 0.5);
     }
     
     // Go left
-    if(key == 'a' && (glCam.get_x() < x_restrict_1))
+    if(key == 'd' && (glCam.get_x() < x_restrict_1))
     {
-        glCam.set_camera(glCam.get_x() + 0.5, glCam.get_y(), glCam.get_z());
+        glCam.set_camera(glCam.get_x() - 0.5, glCam.get_y(), glCam.get_z());
     }
     
     // Go right
-    if(key == 'd' && (glCam.get_x() > x_restrict2))
+    if(key == 'a' && (glCam.get_x() > x_restrict2))
     {
-        glCam.set_camera(glCam.get_x() - 0.5, glCam.get_y(), glCam.get_z());
+        glCam.set_camera(glCam.get_x() + 0.5, glCam.get_y(), glCam.get_z());
     }
 }
 
 void GLFuncs::Special(int key, int x, int y)
 {
-    if(key == GLUT_KEY_LEFT && x_angle < 45.0f)
+    if(key == GLUT_KEY_LEFT)
     {
-        x_angle += 5.0f;
+        y_angle += 2.0f;
     }
-    if(key == GLUT_KEY_RIGHT && x_angle > -45.0f)
+    if(key == GLUT_KEY_RIGHT)
     {
-        x_angle -= 5.0f;
+        y_angle -= 2.0f;
     }
     
-    if(key == GLUT_KEY_UP && y_angle < 45.0f)
+    if(key == GLUT_KEY_UP && x_angle < 30.0f)
     {
-        y_angle += 5.0f;
+        x_angle += 2.0f;
     }
-    if(key == GLUT_KEY_DOWN && y_angle >= 0.0f)
+    if(key == GLUT_KEY_DOWN && x_angle > -30.0f)
     {
-        y_angle -= 5.0f;
+        x_angle -= 2.0f;
     }
 }
 
@@ -407,6 +443,11 @@ void GLFuncs::Resize(int w, int h)
     {
         wp.set_size(w, h);
     }
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(40.0,(GLdouble)w/(GLdouble)h,0.5,1000.0);
+    glMatrixMode(GL_MODELVIEW);
     
     glViewport(0, 0, w, h);
 }

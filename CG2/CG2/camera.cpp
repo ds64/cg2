@@ -5,6 +5,10 @@
 //  Created by Andrey Bogdanov on 28.11.14.
 //  Copyright (c) 2014 Andrey Bogdanov. All rights reserved.
 //
+//  PURPOSE:
+//      * Storing camera coordinates
+//      * Moving camera
+//
 
 #include "camera.h"
 
