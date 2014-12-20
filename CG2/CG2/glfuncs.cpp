@@ -40,8 +40,8 @@ GLFuncs glf = *new GLFuncs();
 
 float x_angle = 0, y_angle = 0;
 
-float x_restrict_1 = 12, x_restrict2 = -12;
-float z_restrict_1 = -12, z_restrict2 = -32;
+float x_restrict_1 = -10, x_restrict_2 = 10;
+float z_restrict_1 = 10, z_restrict_2 = 30;
 
 bool door = false;
 
@@ -65,19 +65,25 @@ GLuint GLFuncs::loadTexture(const char *fileName)
     FILE * f = fopen(fileName, "rb");
     if(!f)
     {
+#ifdef DEBUG_MODE
         std::cout << "File can not be opened" << std::endl;
-        return false;
+#endif
+        return 0;
     }
     
     if(fread(header, 1, 54, f)!=54)
     {
+#ifdef DEBUG_MODE
         std::cout << "Not a .bmp file" << std::endl;
-        return false;
+#endif
+        return 0;
     }
     
     if ( header[0]!='B' || header[1]!='M' )
     {
+#ifdef DEBUG_MODE
         std::cout << "Incorrect .bmp file" << std::endl;
+#endif
         return 0;
     }
     
@@ -137,6 +143,43 @@ void GLFuncs::fogEnable()
     glFogf(GL_FOG_START, 0);
     glFogf(GL_FOG_END, 70);
     glFogfv(GL_FOG_COLOR, fog);
+}
+
+// Check if collision hit
+
+bool GLFuncs::collisionDetect(int type)
+{
+    if(type == GLFuncs::FORWARD)
+    {
+        if(glCam.get_z() < z_restrict_1 - 0.5)
+            return false;
+        else if(glCam.get_z() == z_restrict_1 - 0.5 && door == true)
+            return false;
+        else if(glCam.get_z() > z_restrict_1 - 0.5 && glCam.get_z() < z_restrict_2)
+            return false;
+        else if(glCam.get_z() > z_restrict_2)
+            return false;
+    }
+    if(type == GLFuncs::BACK)
+    {
+        if(glCam.get_z() > z_restrict_1 + 0.5)
+            return false;
+        else if(glCam.get_z() == z_restrict_1 + 0.5 && door == true)
+            return false;
+        else if(glCam.get_z() < z_restrict_2 && glCam.get_z() > z_restrict_1 + 0.5)
+            return false;
+        else if(glCam.get_z() < z_restrict_1 + 0.5)
+            return false;
+    }
+    if(type == GLFuncs::LEFT)
+    {
+        return false;
+    }
+    if(type == GLFuncs::RIGHT)
+    {
+        return false;
+    }
+    return true;
 }
 
 // Idle function
@@ -383,10 +426,16 @@ void GLFuncs::Keyboard(unsigned char key, int x, int y)
         }
     }
     
-    // Go forward
-    if(key == 's')
+    // Go back
+    if(key == 's' && collisionDetect(GLFuncs::BACK) == false)
     {
         glCam.set_camera(glCam.get_x(), glCam.get_y(), glCam.get_z() - 0.5);
+    }
+    
+    // Go forward
+    if(key == 'w' && collisionDetect(GLFuncs::FORWARD) == false)
+    {
+        glCam.set_camera(glCam.get_x(), glCam.get_y(), glCam.get_z() + 0.5);
     }
     
     // Open door
@@ -395,20 +444,14 @@ void GLFuncs::Keyboard(unsigned char key, int x, int y)
         door = !door;
     }
     
-    // Go back
-    if(key == 'w')
-    {
-        glCam.set_camera(glCam.get_x(), glCam.get_y(), glCam.get_z() + 0.5);
-    }
-    
-    // Go left
-    if(key == 'd' && (glCam.get_x() < x_restrict_1))
+    // Go right
+    if(key == 'd' && collisionDetect(GLFuncs::LEFT) == false)
     {
         glCam.set_camera(glCam.get_x() - 0.5, glCam.get_y(), glCam.get_z());
     }
     
-    // Go right
-    if(key == 'a' && (glCam.get_x() > x_restrict2))
+    // Go left
+    if(key == 'a' && collisionDetect(GLFuncs::RIGHT) == false)
     {
         glCam.set_camera(glCam.get_x() + 0.5, glCam.get_y(), glCam.get_z());
     }

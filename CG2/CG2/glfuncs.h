@@ -25,9 +25,17 @@ public:
     static void lightEnable();
     static void fogEnable();
     
+    static bool collisionDetect(int type);
     static GLuint loadTexture(const char* fileName);
 private:
     bool m_isFullScreen;
+    
+    enum{
+        FORWARD,
+        BACK,
+        LEFT,
+        RIGHT
+    };
 };
 
 #endif /* defined(__CG2__glfuncs__) */
