@@ -32,6 +32,9 @@ double color_blue[3] = {0.0f, 0.0f, 1.0f};
 double color_black[3] = {0.0f, 0.0f, 0.0f};
 double color_white[3] = {1.0f, 1.0f, 1.0f};
 
+int atime = 0;
+double colortime = 0.0;
+
 // windowProperties, glCamera, GLFuncs classes init
 
 windowProperties wp = *new windowProperties(false, 0, 0, 640, 480);
@@ -376,9 +379,88 @@ void GLFuncs::Display()
         glDisable(GL_LIGHT0);
     }
     
-    GLfloat light0_diffuse[3] = {1.0, 1.0, 1.0};
+    glPushMatrix();
+    
+    glRotatef(atime, atime, atime, 1);
+    glTranslated(0, -4, 0);
+    
+    glBegin(GL_TRIANGLES);
+    glVertex3d(-20, 0, -10);
+    glVertex3d(-20, 0, -20);
+    glVertex3d(-25,9,-15);
+    glEnd();
+    
+    glBegin(GL_TRIANGLES);
+    glVertex3d(-20, 0, -10);
+    glVertex3d(-30, 0, -10);
+    glVertex3d(-25,9,-15);
+    glEnd();
+    
+    glBegin(GL_TRIANGLES);
+    glVertex3d(-20, 0, -20);
+    glVertex3d(-30, 0, -20);
+    glVertex3d(-25,9,-15);
+    glEnd();
+    
+    glBegin(GL_TRIANGLES);
+    glVertex3d(-30, 0, -10);
+    glVertex3d(-30, 0, -20);
+    glVertex3d(-25,9,-15);
+    glEnd();
+    
+    glBegin(GL_TRIANGLES);
+    glVertex3d(-20, 8, -10);
+    glVertex3d(-20, 8, -20);
+    glVertex3d(-25,7,-15);
+    glEnd();
+    
+    glBegin(GL_TRIANGLES);
+    glVertex3d(-20, 8, -10);
+    glVertex3d(-30, 8, -10);
+    glVertex3d(-25,17,-15);
+    glEnd();
+    
+    glBegin(GL_TRIANGLES);
+    glVertex3d(-20, 8, -20);
+    glVertex3d(-30, 8, -20);
+    glVertex3d(-25,17,-15);
+    glEnd();
+    
+    glBegin(GL_TRIANGLES);
+    glVertex3d(-30, 8, -10);
+    glVertex3d(-30, 8, -20);
+    glVertex3d(-25,17,-15);
+    glEnd();
+    
+    glBegin(GL_TRIANGLES);
+    glVertex3d(-20, 16, -10);
+    glVertex3d(-20, 16, -20);
+    glVertex3d(-25,25,-15);
+    glEnd();
+    
+    glBegin(GL_TRIANGLES);
+    glVertex3d(-20, 16, -10);
+    glVertex3d(-30, 16, -10);
+    glVertex3d(-25,25,-15);
+    glEnd();
+    
+    glBegin(GL_TRIANGLES);
+    glVertex3d(-20, 16, -20);
+    glVertex3d(-30, 16, -20);
+    glVertex3d(-25,25,-15);
+    glEnd();
+    
+    glBegin(GL_TRIANGLES);
+    glVertex3d(-30, 16, -10);
+    glVertex3d(-30, 16, -20);
+    glVertex3d(-25,25,-15);
+    glEnd();
+    
+    glPopMatrix();
+    
+    GLfloat light0_diffuse[3] = {1.0, static_cast<GLfloat>(colortime), static_cast<GLfloat>(1 - colortime)};
     GLfloat light0_position[4] = {0, 3, -10.0, 1.0};
-    GLfloat light0_spot_direction[3] = {0.0, -1.0, 0.0};
+    GLfloat light0_spot_direction[3] = {0, -1, static_cast<GLfloat>(-1.0*sin(atime/5))};
     GLfloat light0_spot_cutoff = 20.0f;
     
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
@@ -388,8 +470,21 @@ void GLFuncs::Display()
     
     GLfloat light1_specular[3] = {0.7, 0.5, 0.0};
     GLfloat light1_position[4] = {0, 5, 0.0, 1.0};
-    GLfloat light1_spot_direction[3] = {0.0, -1.0, 0.0};
+    GLfloat light1_spot_direction[3] = {0.0, -1, 0.0};
     GLfloat light1_spot_cutoff = 90.0f;
+    
+    atime++;
+    colortime += 0.01;
+    
+    if(atime == 90)
+    {
+        atime = 0;
+    }
+    
+    if(colortime == 1)
+    {
+        colortime = 0.0;
+    }
     
     glLightfv(GL_LIGHT1, GL_AMBIENT, light1_specular);
     glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
