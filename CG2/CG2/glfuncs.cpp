@@ -66,8 +66,14 @@ GLuint GLFuncs::loadTexture(const char *fileName)
     
     unsigned char *data;
     
+// Visual Studio doesn't allow to use fopen
+#if defined (__APPLE__)
+    FILE * f = fopen(fileName , "rb");
+#elif defined (_WIN32)
 	FILE * f;
 	fopen_s(&f, fileName, "rb");
+#endif
+    
     if(!f)
     {
 #ifdef DEBUG_MODE

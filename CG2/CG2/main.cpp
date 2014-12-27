@@ -9,11 +9,11 @@
 //      * OpenGL initialisation and entering main OpenGL loop
 //
 
-#if defined (OS_MACOSX)
+#if defined (__APPLE__)
 	#include <GLUT/GLUT.h>
 	#include <OpenGL/gl.h>
 	#include <OpenGL/glu.h>
-#else
+#elif defined (_WIN32)
 	#include <Windows.h>
 	#include <glut.h>
 	#include <GL/gl.h>

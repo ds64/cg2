@@ -9,10 +9,10 @@
 #ifndef __CG2__camera__
 #define __CG2__camera__
 
-#if defined (OS_MACOSX)
+#if defined (__APPLE__)
 	#include <OpenGL/gl.h>
 	#include <OpenGL/glu.h>
-#else
+#elif defined (_WIN32)
 	#include <Windows.h>
 	#include <GL/gl.h>
 	#include <GL/glu.h>
