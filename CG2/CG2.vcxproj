@@ -91,6 +91,9 @@
     <ClCompile Include="CG2\main.cpp" />
     <ClCompile Include="CG2\windowProperties.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="Debug\Wood.bmp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

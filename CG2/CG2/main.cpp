@@ -48,7 +48,11 @@ int main(int argc, char **argv)
     
     GLFuncs::lightEnable();
     GLFuncs::fogEnable();
+#if defined (__APPLE__)
     GLFuncs::loadTexture("/Users/playingg0d/Documents/Projects/cg2/CG2/CG2/Wood.bmp");
+#elif defined (_WIN32)
+	GLFuncs::loadTexture("./Wood.bmp");
+#endif
     
     glutSwapBuffers();                                          // Swap buffers for double buffering
     
