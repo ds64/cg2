@@ -9,10 +9,17 @@
 //      * OpenGL initialisation and entering main OpenGL loop
 //
 
+#if defined (OS_MACOSX)
+	#include <GLUT/GLUT.h>
+	#include <OpenGL/gl.h>
+	#include <OpenGL/glu.h>
+#else
+	#include <Windows.h>
+	#include <glut.h>
+	#include <GL/gl.h>
+	#include <GL/glu.h>
+#endif
 #include <iostream>
-#include <GLUT/GLUT.h>
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
 #include "glfuncs.h"
 
 int main(int argc, char **argv)

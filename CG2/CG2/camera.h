@@ -9,9 +9,16 @@
 #ifndef __CG2__camera__
 #define __CG2__camera__
 
+#if defined (OS_MACOSX)
+	#include <OpenGL/gl.h>
+	#include <OpenGL/glu.h>
+#else
+	#include <Windows.h>
+	#include <GL/gl.h>
+	#include <GL/glu.h>
+#endif
+
 #include <stdio.h>
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
 
 class glCamera
 {

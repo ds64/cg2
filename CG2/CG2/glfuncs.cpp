@@ -11,15 +11,16 @@
 //      * Rendering
 //
 
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#include <GLUT/GLUT.h>
 #include "glfuncs.h"
 #include "windowProperties.h"
 #include "camera.h"
 #include <stdlib.h>
 #include <iostream>
 #include <math.h>
+
+#if defined (_WIN32)
+	#define _CRT_SECURE_NO_WARNINGS
+#endif
 
 #define DEBUG_MODE 1
 
@@ -65,7 +66,8 @@ GLuint GLFuncs::loadTexture(const char *fileName)
     
     unsigned char *data;
     
-    FILE * f = fopen(fileName, "rb");
+	FILE * f;
+	fopen_s(&f, fileName, "rb");
     if(!f)
     {
 #ifdef DEBUG_MODE
@@ -110,7 +112,7 @@ GLuint GLFuncs::loadTexture(const char *fileName)
     
     glBindTexture(GL_TEXTURE_2D, textureID);
     
-    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_BGR, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0,GL_RGB, width, height, 0, GL_BGR_EXT, GL_UNSIGNED_BYTE, data);
     
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
